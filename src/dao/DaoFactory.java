@@ -10,7 +10,9 @@ import core.DConnectionMaker;
 public class DaoFactory {
 	@Bean
 	public UserDao userDao() {
-		return new UserDao(connectionMaker());
+		UserDao userDao = new UserDao();
+		userDao.setConnectinoMaker(connectionMaker());
+		return userDao;
 	}
 
 	@Bean

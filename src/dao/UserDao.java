@@ -5,18 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import core.SimpleConnectionMaker;
+import core.ConnectionMaker;
+import core.DConnectionMaker;
 import entity.UserEntity;
 
 public class UserDao {
-	private SimpleConnectionMaker simpleConnectionMaker;
+	private ConnectionMaker connectionMaker;
 
 	public UserDao() {
-		this.simpleConnectionMaker = new SimpleConnectionMaker();
+		this.connectionMaker = new DConnectionMaker();
 	}
 
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		Connection conn = simpleConnectionMaker.makeNewConnection();
+		Connection conn = connectionMaker.makeConnection();
 		PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
 
 		pstmt.setString(1, user.getId());
@@ -30,7 +31,7 @@ public class UserDao {
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {
-		Connection conn = simpleConnectionMaker.makeNewConnection();
+		Connection conn = connectionMaker.makeConnection();
 		PreparedStatement pstmt = conn.prepareStatement("select * from users where id = ?");
 
 		pstmt.setString(1, id);

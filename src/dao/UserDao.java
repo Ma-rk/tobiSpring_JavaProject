@@ -1,14 +1,13 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import entity.UserEntity;
 
-public class UserDao {
+public abstract class UserDao {
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
@@ -43,9 +42,5 @@ public class UserDao {
 		return user;
 	}
 
-	private Connection getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://192.168.56.101:3306/dev", "mark", "k");
-		return conn;
-	}
+	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }

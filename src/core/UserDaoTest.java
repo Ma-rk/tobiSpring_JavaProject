@@ -2,12 +2,13 @@ package core;
 
 import java.sql.SQLException;
 
+import dao.DUserDao;
 import dao.UserDao;
 import entity.UserEntity;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new UserDao();
+		UserDao dao = new DUserDao();
 
 		UserEntity user = new UserEntity();
 		user.setId("idid");

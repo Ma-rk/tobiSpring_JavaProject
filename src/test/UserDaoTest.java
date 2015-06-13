@@ -1,7 +1,10 @@
-package core;
+package test;
+
+import static org.junit.Assert.*;
 
 import java.sql.SQLException;
 
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -9,7 +12,9 @@ import dao.UserDao;
 import entity.UserEntity;
 
 public class UserDaoTest {
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+
+	@Test
+	public void addUserTest() throws SQLException, ClassNotFoundException{
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 		UserDao dao = context.getBean("userDao", UserDao.class);
 
@@ -20,12 +25,10 @@ public class UserDaoTest {
 
 		dao.add(user);
 
-		System.out.println("registerd [" + user.getId() + "]");
-
 		UserEntity user2 = dao.get(user.getId());
-
-		System.out.println("retrieved [" + user2.getId() + "]");
-		System.out.println(user2.getName());
-		System.out.println(user2.getPassword());
+		
+		assertEquals(user.getId(), user2.getId());
+		assertEquals(user.getName(), user2.getName());
+		assertEquals(user.getPassword(), user2.getPassword());
 	}
 }

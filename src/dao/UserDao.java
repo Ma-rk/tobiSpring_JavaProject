@@ -11,7 +11,7 @@ import entity.UserEntity;
 public class UserDao {
 	private ConnectionMaker connectionMaker;
 
-	public void setConnectinoMaker(ConnectionMaker connectionMaker) {
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
 

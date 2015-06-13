@@ -7,7 +7,7 @@ import entity.UserEntity;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new UserDao();
+		UserDao dao = new UserDao(new DConnectionMaker());
 
 		UserEntity user = new UserEntity();
 		user.setId("idid");

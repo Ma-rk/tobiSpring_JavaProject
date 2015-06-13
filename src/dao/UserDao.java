@@ -6,14 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import core.ConnectionMaker;
-import core.DConnectionMaker;
 import entity.UserEntity;
 
 public class UserDao {
 	private ConnectionMaker connectionMaker;
 
-	public UserDao() {
-		this.connectionMaker = new DConnectionMaker();
+	public UserDao(ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
 	}
 
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {

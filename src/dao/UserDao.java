@@ -10,8 +10,7 @@ import entity.UserEntity;
 
 public class UserDao {
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://192.168.56.101:3306/dev", "mark", "k");
+		Connection conn = getConnection();
 		PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
 
 		pstmt.setString(1, user.getId());
@@ -25,8 +24,7 @@ public class UserDao {
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://192.168.56.101:3306/dev", "mark", "k");
+		Connection conn = getConnection();
 		PreparedStatement pstmt = conn.prepareStatement("select * from users where id = ?");
 
 		pstmt.setString(1, id);
@@ -43,5 +41,11 @@ public class UserDao {
 		conn.close();
 
 		return user;
+	}
+
+	private Connection getConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://192.168.56.101:3306/dev", "mark", "k");
+		return conn;
 	}
 }

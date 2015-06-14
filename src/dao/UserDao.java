@@ -19,17 +19,8 @@ public class UserDao {
 	}
 
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		Connection conn = dataSource.getConnection();
-		PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
-
-		pstmt.setString(1, user.getId());
-		pstmt.setString(2, user.getName());
-		pstmt.setString(3, user.getPassword());
-
-		pstmt.executeUpdate();
-
-		pstmt.close();
-		conn.close();
+		StatementStrategy stmtSt = new AddStatement(user);
+		jdbcContextWithStatementStrategy(stmtSt);;
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {

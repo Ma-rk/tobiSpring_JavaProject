@@ -49,22 +49,22 @@ public class UserDaoTest {
 	@Test
 	public void addAndGet() throws SQLException, ClassNotFoundException {
 		dao.deleteAll();
-		assertEquals(0, dao.getCout());
+		assertEquals(0, dao.getCount());
 
 		dao.add(user1);
-		assertEquals(1, dao.getCout());
+		assertEquals(1, dao.getCount());
 
 		dao.add(user2);
-		assertEquals(2, dao.getCout());
+		assertEquals(2, dao.getCount());
 
 		dao.deleteAll();
-		assertEquals(0, dao.getCout());
+		assertEquals(0, dao.getCount());
 	}
 
 	@Test(expected = EmptyResultDataAccessException.class)
 	public void getUserFailure() throws SQLException, ClassNotFoundException {
 		dao.deleteAll();
-		assertEquals(0, dao.getCout());
+		assertEquals(0, dao.getCount());
 
 		dao.get("unknownId");
 	}

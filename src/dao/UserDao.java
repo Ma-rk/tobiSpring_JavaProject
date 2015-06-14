@@ -83,7 +83,7 @@ public class UserDao {
 		}
 	}
 
-	public int getCout() throws SQLException {
+	public int getCount() throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

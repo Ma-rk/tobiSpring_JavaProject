@@ -5,6 +5,15 @@ public class UserEntity {
 	String name;
 	String password;
 
+	public UserEntity(String id, String name, String password) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
+
+	public UserEntity() {
+	}
+
 	public String getId() {
 		return id;
 	}

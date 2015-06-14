@@ -17,19 +17,20 @@ import dao.UserDao;
 import entity.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
+
 	@Autowired
 	private ApplicationContext context;
 
+	@Autowired
 	private UserDao dao;
+
 	private UserEntity user1;
 	private UserEntity user2;
 
 	@Before
 	public void setup() {
-		this.dao = context.getBean("userDao", UserDao.class);
-
 		this.user1 = new UserEntity("idid", "namename", "pwpw");
 		this.user2 = new UserEntity("idid2", "nmnm", "pwpw");
 	}

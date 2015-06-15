@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import code.Level;
 import entity.UserEntity;
 
 public class UserDaoJdbc implements UserDao {

@@ -22,6 +22,11 @@ public class UserDao {
 		StatementStrategy stmtSt = new AddStatement(user);
 		jdbcContextWithStatementStrategy(stmtSt);;
 	}
+	
+	public void deleteAll() throws SQLException {
+		StatementStrategy stmtSt = new DeleteAllStatement();
+		jdbcContextWithStatementStrategy(stmtSt);;
+	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {
 		Connection conn = dataSource.getConnection();
@@ -45,11 +50,6 @@ public class UserDao {
 		if (user == null) throw new EmptyResultDataAccessException(1);
 
 		return user;
-	}
-
-	public void deleteAll() throws SQLException {
-		StatementStrategy stmtSt = new DeleteAllStatement();
-		jdbcContextWithStatementStrategy(stmtSt);;
 	}
 
 	public int getCount() throws SQLException {

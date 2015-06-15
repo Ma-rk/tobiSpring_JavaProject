@@ -19,7 +19,7 @@ public class UserDao {
 	}
 
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		class AddStatement implements StatementStrategy{
+		class AddStatement implements StatementStrategy {
 			UserEntity user;
 
 			public AddStatement(UserEntity user) {
@@ -36,11 +36,11 @@ public class UserDao {
 				return pstmt;
 			}
 		}
-		
+
 		StatementStrategy stmtSt = new AddStatement(user);
-		jdbcContextWithStatementStrategy(stmtSt);;
+		jdbcContextWithStatementStrategy(stmtSt);
 	}
-	
+
 	public void deleteAll() throws SQLException {
 		class DeleteAllStatement implements StatementStrategy {
 			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
@@ -48,9 +48,9 @@ public class UserDao {
 				return pstmt;
 			}
 		}
-		
+
 		StatementStrategy stmtSt = new DeleteAllStatement();
-		jdbcContextWithStatementStrategy(stmtSt);;
+		jdbcContextWithStatementStrategy(stmtSt);
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {

@@ -1,6 +1,6 @@
 package dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 
@@ -9,16 +9,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import dao.UserDao;
+import com.google.gson.Gson;
+
 import entity.UserEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
+	Gson gson = new Gson();
 
 	@Autowired
 	private ApplicationContext context;
@@ -38,12 +39,14 @@ public class UserDaoTest {
 	@Test
 	public void addUserTest() throws SQLException, ClassNotFoundException {
 		dao.add(user1);
+		String userListJson = gson.toJson(dao.get(user1.getId()));
+		System.out.println(userListJson);
 
-		UserEntity retrievedUser = dao.get(user1.getId());
+		dao.deleteAll();
 
-		assertEquals(user1.getId(), retrievedUser.getId());
-		assertEquals(user1.getName(), retrievedUser.getName());
-		assertEquals(user1.getPassword(), retrievedUser.getPassword());
+		dao.add(user2);
+		userListJson = gson.toJson(dao.get(user2.getId()));
+		System.out.println(userListJson);
 	}
 
 	@Test
@@ -61,11 +64,11 @@ public class UserDaoTest {
 		assertEquals(0, dao.getCount());
 	}
 
-	@Test(expected = EmptyResultDataAccessException.class)
+	@Test
 	public void getUserFailure() throws SQLException, ClassNotFoundException {
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
 
-		dao.get("unknownId");
+		assertEquals("[]", dao.get("unknownId").toString());
 	}
 }

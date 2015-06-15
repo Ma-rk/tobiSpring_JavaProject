@@ -25,29 +25,11 @@ public class UserDao {
 	}
 
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-
-				PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
-
-				pstmt.setString(1, user.getId());
-				pstmt.setString(2, user.getName());
-				pstmt.setString(3, user.getPassword());
-
-				return pstmt;
-			}
-		});
+		this.jdbcContext.executeSql("insert into users(id, name, password) values (?,?,?)", user.getId(), user.getName(), user.getPassword());
 	}
 
 	public void deleteAll() throws SQLException {
-		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-
-				PreparedStatement pstmt = conn.prepareStatement("delete from users");
-
-				return pstmt;
-			}
-		});
+		this.jdbcContext.executeSql("delete from users");
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {

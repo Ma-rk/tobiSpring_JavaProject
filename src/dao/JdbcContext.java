@@ -40,4 +40,16 @@ public class JdbcContext {
 			}
 		}
 	}
+
+	public void executeSql(String qry, String... params) throws SQLException {
+		workWithStatementStrategy(new StatementStrategy() {
+			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
+				PreparedStatement pstmt = conn.prepareStatement(qry);
+				for (int idx = 0; idx < params.length; idx++) {
+					pstmt.setString(idx + 1, params[idx]);
+				}
+				return pstmt;
+			}
+		});
+	}
 }

@@ -5,30 +5,16 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import entity.UserEntity;
 
-public class UserDao {
-	private JdbcTemplate jdbcTemplate;
+public interface UserDao {
+	void setDataSource(DataSource dataSource);
 
-	public void setDataSource(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
+	void add(UserEntity user);
 
-	public void add(UserEntity user) {
-		this.jdbcTemplate.update("insert into users(id, name, password) values (?,?,?)", user.getId(), user.getName(), user.getPassword());
-	}
+	void deleteAll();
 
-	public void deleteAll() {
-		this.jdbcTemplate.update("delete from users");
-	}
+	List<Map<String, Object>> get(String id);
 
-	public List<Map<String, Object>> get(String id) {
-		return this.jdbcTemplate.queryForList("select * from users where id = ?", id);
-	}
-
-	public int getCount() {
-		return this.jdbcTemplate.queryForInt("select count(*) from users");
-	}
+	int getCount();
 }

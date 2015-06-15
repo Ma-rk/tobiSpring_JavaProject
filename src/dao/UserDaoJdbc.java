@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import code.Level;
 import entity.UserEntity;
 
 public class UserDaoJdbc implements UserDao {
@@ -17,7 +18,7 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public void add(UserEntity user) {
-		this.jdbcTemplate.update("insert into users(id, name, password) values (?,?,?)", user.getId(), user.getName(), user.getPassword());
+		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values (?,?,?,?,?,?)", user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
 	}
 
 	public void deleteAll() {

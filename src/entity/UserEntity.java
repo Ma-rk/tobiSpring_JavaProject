@@ -10,13 +10,16 @@ public class UserEntity {
 	int login;
 	int recommend;
 
-	public UserEntity(String id, String name, String password) {
+	public UserEntity() {
+	}
+
+	public UserEntity(String id, String name, String password, Level level, int login, int recommend) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
-	}
-
-	public UserEntity() {
+		this.level = level;
+		this.login = login;
+		this.recommend = recommend;
 	}
 
 	public String getId() {

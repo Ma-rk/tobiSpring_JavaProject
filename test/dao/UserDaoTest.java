@@ -12,6 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import code.Level;
+
 import com.google.gson.Gson;
 
 import entity.UserEntity;
@@ -32,8 +34,9 @@ public class UserDaoTest {
 
 	@Before
 	public void setup() {
-		this.user1 = new UserEntity("idid", "namename", "pwpw");
-		this.user2 = new UserEntity("idid2", "nmnm", "pwpw");
+		this.user1 = new UserEntity("idid", "namename", "pwpw", Level.BASIC, 1, 0);
+		this.user2 = new UserEntity("idid2", "nmnm", "pwpw", Level.SILVER, 55, 10);
+		this.user2 = new UserEntity("idid3", "nm_nm", "pwpw", Level.GOLD, 100, 40);
 	}
 
 	@Test

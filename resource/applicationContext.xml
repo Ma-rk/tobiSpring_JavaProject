@@ -10,7 +10,11 @@
 		<property name="username" value="mark"/>
 		<property name="password" value="k"/>
 	</bean>
+	<bean id="jdbcContext" class="dao.JdbcContext">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 	<bean id="userDao" class="dao.UserDao">
 		<property name="dataSource" ref="dataSource" />
+		<property name="jdbcContext" ref="jdbcContext" />
 	</bean>
 </beans>

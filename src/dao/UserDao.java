@@ -18,8 +18,14 @@ public class UserDao {
 		this.dataSource = dataSource;
 	}
 
+	private JdbcContext jdbcContext;
+
+	public void setJdbcContext(JdbcContext jdbcContext) {
+		this.jdbcContext = jdbcContext;
+	}
+
 	public void add(UserEntity user) throws ClassNotFoundException, SQLException {
-		StatementStrategy stmtSt = new StatementStrategy() {
+		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
 
 				PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values (?,?,?)");
@@ -30,20 +36,18 @@ public class UserDao {
 
 				return pstmt;
 			}
-		};
-		jdbcContextWithStatementStrategy(stmtSt);
+		});
 	}
 
 	public void deleteAll() throws SQLException {
-		StatementStrategy stmtSt = new StatementStrategy() {
+		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
 
 				PreparedStatement pstmt = conn.prepareStatement("delete from users");
 
 				return pstmt;
 			}
-		};
-		jdbcContextWithStatementStrategy(stmtSt);
+		});
 	}
 
 	public UserEntity get(String id) throws ClassNotFoundException, SQLException {
@@ -94,34 +98,6 @@ public class UserDao {
 				} catch (SQLException e) {
 				}
 			}
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-	}
-
-	public void jdbcContextWithStatementStrategy(StatementStrategy stmtSt) throws SQLException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			conn = dataSource.getConnection();
-
-			pstmt = stmtSt.makePreparedStatement(conn);
-
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			throw e;
-		} finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();

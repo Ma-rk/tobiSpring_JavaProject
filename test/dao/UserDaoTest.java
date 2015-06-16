@@ -32,12 +32,13 @@ public class UserDaoTest {
 
 	private UserEntity user1;
 	private UserEntity user2;
+	private UserEntity user3;
 
 	@Before
 	public void setup() {
 		this.user1 = new UserEntity("idid", "namename", "pwpw", Level.BASIC, 1, 0);
 		this.user2 = new UserEntity("idid2", "nmnm", "pwpw", Level.SILVER, 55, 10);
-		this.user2 = new UserEntity("idid3", "nm_nm", "pwpw", Level.GOLD, 100, 40);
+		this.user3 = new UserEntity("idid3", "nm_nm", "pwpw", Level.GOLD, 100, 40);
 	}
 
 	@Test
@@ -68,6 +69,25 @@ public class UserDaoTest {
 
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
+	}
+
+	@Test
+	public void updateTest() {
+		dao.deleteAll();
+
+		dao.add(user1);
+		dao.add(user2);
+		dao.add(user3);
+
+		assertEquals(3, dao.getCount());
+
+		user1.setLogin(12);
+		user1.setPassword("new_pw_pw");
+
+		dao.update(user1);
+
+		checkUserCoidentity(user2, dao.get(user2.getId()));
+		checkUserCoidentity(user3, dao.get(user3.getId()));
 	}
 
 	@Test(expected = EmptyResultDataAccessException.class)

@@ -11,6 +11,8 @@ public interface UserDao {
 
 	void deleteAll();
 
+	void update(UserEntity user);
+
 	UserEntity get(String id);
 
 	int getCount();

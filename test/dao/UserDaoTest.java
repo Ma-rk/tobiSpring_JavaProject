@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -59,19 +60,30 @@ public class UserDaoTest {
 
 		dao.add(user1);
 		assertEquals(1, dao.getCount());
+		checkUserCoidentity(user1, dao.get(user1.getId()));
 
 		dao.add(user2);
 		assertEquals(2, dao.getCount());
+		checkUserCoidentity(user2, dao.get(user2.getId()));
 
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
 	}
 
-	@Test
+	@Test(expected = EmptyResultDataAccessException.class)
 	public void getUserFailure() throws SQLException, ClassNotFoundException {
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
 
-		assertEquals("[]", dao.get("unknownId").toString());
+		dao.get("unknownId");
+	}
+
+	private void checkUserCoidentity(UserEntity user1, UserEntity user2) {
+		assertEquals(user1.getId(), user2.getId());
+		assertEquals(user1.getName(), user2.getName());
+		assertEquals(user1.getPassword(), user2.getPassword());
+		assertEquals(user1.getLevel(), user2.getLevel());
+		assertEquals(user1.getLogin(), user2.getLogin());
+		assertEquals(user1.getRecommend(), user2.getRecommend());
 	}
 }

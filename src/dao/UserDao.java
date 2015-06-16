@@ -1,8 +1,5 @@
 package dao;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import entity.UserEntity;
@@ -14,7 +11,7 @@ public interface UserDao {
 
 	void deleteAll();
 
-	List<Map<String, Object>> get(String id);
+	UserEntity get(String id);
 
 	int getCount();
 }

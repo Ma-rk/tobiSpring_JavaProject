@@ -1,6 +1,8 @@
 package service;
 
 import static org.junit.Assert.*;
+import static service.UserService.MIN_LOGCOUT_FOR_SILVER;
+import static service.UserService.MIN_RECCOMMEND_FOR_GOLD;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import code.Level;
 import dao.UserDao;
 import entity.UserEntity;
-
-import static service.UserService.MIN_LOGCOUT_FOR_SILVER;
-import static service.UserService.MIN_RECCOMMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
@@ -70,6 +69,23 @@ public class UserServiceTest {
 		assertEquals(Level.BASIC, userWithoutLevelRetrieved.getLevel());
 	}
 
+	@Test
+	public void upgradeAllorNothing() {
+		UserService testUserService = new TestUserService(usersFixture.get(3).getId());
+		testUserService.setUserDao(this.userDao);
+
+		userDao.deleteAll();
+		for (UserEntity user : usersFixture)
+			userDao.add(user);
+
+		try {
+			testUserService.upgradeUserLevel();
+			fail("TestUserServiceException expected");
+		} catch (TestUserServiceException e) {
+		}
+		checkUserLevel(usersFixture.get(1), false);
+	}
+
 	private void checkUserLevel(UserEntity user, boolean upgraded) {
 		System.out.print("checking user level of user [" + user.getId() + "]: ");
 		UserEntity updatedUser = userDao.get(user.getId());
@@ -80,5 +96,22 @@ public class UserServiceTest {
 			System.out.println("not updated.");
 			assertEquals(updatedUser.getLevel(), user.getLevel());
 		}
+	}
+
+	static class TestUserService extends UserService {
+		private String id;
+
+		private TestUserService(String id) {
+			this.id = id;
+		}
+
+		protected void upgradeUserLevel(UserEntity user) {
+			if (user.getId().equals(this.id)) throw new TestUserServiceException();
+			super.upgradeUserLevel(user);
+		}
+	}
+
+	static class TestUserServiceException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
 	}
 }

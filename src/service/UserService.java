@@ -42,7 +42,7 @@ public class UserService {
 		}
 	}
 
-	private void upgradeUserLevel(UserEntity user) {
+	protected void upgradeUserLevel(UserEntity user) {
 		user.upgradeLevel();
 		userDao.update(user);
 	}

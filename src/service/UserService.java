@@ -1,12 +1,13 @@
 package service;
 
-import java.sql.Connection;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import code.Level;
 import dao.UserDao;
@@ -34,24 +35,19 @@ public class UserService {
 	}
 
 	public void upgradeUserLevel() throws Exception {
-		TransactionSynchronizationManager.initSynchronization();
-		Connection conn = DataSourceUtils.getConnection(dataSource);
-		conn.setAutoCommit(false);
+		PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+		TransactionStatus status=transactionManager.getTransaction(new DefaultTransactionDefinition());
 
 		try {
 			List<UserEntity> users = userDao.getAll();
 			for (UserEntity user : users) {
 				if (isQualifiedToUpgradeUserLevel(user)) upgradeUserLevel(user);
 			}
-			conn.commit();
+			transactionManager.commit(status);
 		} catch (Exception e) {
-			conn.rollback();
+			transactionManager.rollback(status);
 			throw e;
-		} finally {
-			DataSourceUtils.releaseConnection(conn, dataSource);
-			TransactionSynchronizationManager.unbindResource(this.dataSource);
-			TransactionSynchronizationManager.clearSynchronization();
-		}
+		} 
 	}
 
 	private boolean isQualifiedToUpgradeUserLevel(UserEntity user) {

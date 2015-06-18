@@ -7,11 +7,10 @@ import dao.UserDao;
 import entity.UserEntity;
 
 public class UserService {
-	UserDao userDao;
-
 	public static final int MIN_LOGCOUT_FOR_SILVER = 50;
 	public static final int MIN_RECCOMMEND_FOR_GOLD = 30;
 
+	private UserDao userDao;
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}

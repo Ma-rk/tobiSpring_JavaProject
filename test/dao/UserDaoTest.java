@@ -2,7 +2,6 @@ package dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Before;
@@ -43,7 +42,7 @@ public class UserDaoTest {
 	}
 
 	@Test
-	public void addUserTest() throws SQLException, ClassNotFoundException {
+	public void addUserTest() {
 		dao.add(user1);
 		String userListJson = gson.toJson(dao.get(user1.getId()));
 		System.out.println(userListJson);
@@ -60,6 +59,9 @@ public class UserDaoTest {
 		dao.deleteAll();
 
 		assertEquals(0, dao.getCount());
+
+		List<UserEntity> users0 = dao.getAll();
+		assertEquals(0, users0.size());
 
 		dao.add(user1);
 		List<UserEntity> users1 = dao.getAll();
@@ -81,7 +83,7 @@ public class UserDaoTest {
 	}
 
 	@Test
-	public void addAndGet() throws SQLException, ClassNotFoundException {
+	public void addAndGet() {
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
 
@@ -117,7 +119,7 @@ public class UserDaoTest {
 	}
 
 	@Test(expected = EmptyResultDataAccessException.class)
-	public void getUserFailure() throws SQLException, ClassNotFoundException {
+	public void getUserFailure() {
 		dao.deleteAll();
 		assertEquals(0, dao.getCount());
 

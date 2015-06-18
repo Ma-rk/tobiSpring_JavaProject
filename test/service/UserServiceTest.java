@@ -49,6 +49,24 @@ public class UserServiceTest {
 		checkUserLevel(usersFixture.get(4), Level.GOLD);
 	}
 
+	@Test
+	public void levelHandlingUserAddTest() {
+		userDao.deleteAll();
+
+		UserEntity userWithLevel = usersFixture.get(4);
+		UserEntity userWithoutLevel = usersFixture.get(0);
+		userWithoutLevel.setLevel(null);
+
+		userService.add(userWithLevel);
+		userService.add(userWithoutLevel);
+
+		UserEntity userWithLevelRetrieved = userDao.get(userWithLevel.getId());
+		UserEntity userWithoutLevelRetrieved = userDao.get(userWithoutLevel.getId());
+
+		assertEquals(Level.GOLD, userWithLevelRetrieved.getLevel());
+		assertEquals(Level.BASIC, userWithoutLevelRetrieved.getLevel());
+	}
+
 	private void checkUserLevel(UserEntity user, Level expectedLevel) {
 		System.out.println("checking user level of user [" + user.getId() + "]");
 		UserEntity updatedUser = userDao.get(user.getId());

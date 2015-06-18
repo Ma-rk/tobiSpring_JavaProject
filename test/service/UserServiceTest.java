@@ -7,6 +7,8 @@ import static service.UserService.MIN_RECCOMMEND_FOR_GOLD;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,8 @@ public class UserServiceTest {
 	UserService userService;
 	@Autowired
 	UserDao userDao;
+	@Autowired
+	DataSource dataSource;
 
 	List<UserEntity> usersFixture;
 
@@ -36,7 +40,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void upgradeUserLevelTest() {
+	public void upgradeUserLevelTest() throws Exception {
 		userDao.deleteAll();
 
 		for (UserEntity user : usersFixture)
@@ -70,9 +74,10 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void upgradeAllorNothing() {
+	public void upgradeAllorNothing() throws Exception {
 		UserService testUserService = new TestUserService(usersFixture.get(3).getId());
 		testUserService.setUserDao(this.userDao);
+		testUserService.setDataSource(dataSource);
 
 		userDao.deleteAll();
 		for (UserEntity user : usersFixture)

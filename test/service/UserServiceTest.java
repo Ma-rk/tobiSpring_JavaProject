@@ -16,6 +16,9 @@ import code.Level;
 import dao.UserDao;
 import entity.UserEntity;
 
+import static service.UserService.MIN_LOGCOUT_FOR_SILVER;
+import static service.UserService.MIN_RECCOMMEND_FOR_GOLD;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
@@ -28,9 +31,9 @@ public class UserServiceTest {
 
 	@Before
 	public void setUp() {
-		usersFixture = Arrays.asList(new UserEntity("id_1", "user_1", "pwpw", Level.BASIC, 49, 0), new UserEntity("id_2", "user_2", "pwpw", Level.BASIC, 50, 0),
-				new UserEntity("id_3", "user_3", "pwpw", Level.SILVER, 60, 29), new UserEntity("id_4", "user_4", "pwpw", Level.SILVER, 60, 30), new UserEntity("id_5",
-						"user_5", "pwpw", Level.GOLD, 100, 100));
+		usersFixture = Arrays.asList(new UserEntity("id_1", "user_1", "pwpw", Level.BASIC, MIN_LOGCOUT_FOR_SILVER - 1, 0), new UserEntity("id_2", "user_2", "pwpw",
+				Level.BASIC, MIN_LOGCOUT_FOR_SILVER, 0), new UserEntity("id_3", "user_3", "pwpw", Level.SILVER, 60, MIN_RECCOMMEND_FOR_GOLD - 1), new UserEntity(
+				"id_4", "user_4", "pwpw", Level.SILVER, 60, MIN_RECCOMMEND_FOR_GOLD), new UserEntity("id_5", "user_5", "pwpw", Level.GOLD, 100, Integer.MAX_VALUE));
 	}
 
 	@Test

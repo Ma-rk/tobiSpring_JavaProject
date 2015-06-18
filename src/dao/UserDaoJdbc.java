@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -16,11 +17,11 @@ public class UserDaoJdbc implements UserDao {
 
 	RowMapper<UserEntity> userMapper = new RowMapper<UserEntity>() {
 		public UserEntity mapRow(ResultSet rs, int arg1) throws SQLException {
-			return new UserEntity(rs.getString("id"), rs.getString("name"), rs.getString("password"), Level.valueOf(rs.getInt("level")), rs.getInt("login"), rs
-					.getInt("recommend"));
+			return new UserEntity(rs.getString("id"), rs.getString("name"), rs.getString("password"), Level.valueOf(rs.getInt("level")), rs.getInt("login"),
+					rs.getInt("recommend"));
 		}
 	};
-	
+
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
@@ -40,7 +41,11 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public UserEntity get(String id) {
-		return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[] { id }, userMapper);
+		return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[] { id }, this.userMapper);
+	}
+
+	public List<UserEntity> getAll() {
+		return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
 	}
 
 	public int getCount() {

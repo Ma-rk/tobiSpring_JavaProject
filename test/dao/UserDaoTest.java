@@ -3,6 +3,7 @@ package dao;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,31 @@ public class UserDaoTest {
 		dao.add(user2);
 		userListJson = gson.toJson(dao.get(user2.getId()));
 		System.out.println(userListJson);
+	}
+
+	@Test
+	public void getAllTest() {
+		dao.deleteAll();
+
+		assertEquals(0, dao.getCount());
+
+		dao.add(user1);
+		List<UserEntity> users1 = dao.getAll();
+		assertEquals(1, users1.size());
+		checkUserCoidentity(user1, users1.get(0));
+
+		dao.add(user2);
+		List<UserEntity> users2 = dao.getAll();
+		assertEquals(2, users2.size());
+		checkUserCoidentity(user1, users2.get(0));
+		checkUserCoidentity(user2, users2.get(1));
+
+		dao.add(user3);
+		List<UserEntity> users3 = dao.getAll();
+		assertEquals(3, users3.size());
+		checkUserCoidentity(user1, users3.get(0));
+		checkUserCoidentity(user2, users3.get(1));
+		checkUserCoidentity(user3, users3.get(2));
 	}
 
 	@Test

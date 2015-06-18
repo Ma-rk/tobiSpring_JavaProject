@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import entity.UserEntity;
@@ -14,6 +16,8 @@ public interface UserDao {
 	void update(UserEntity user);
 
 	UserEntity get(String id);
+
+	List<UserEntity> getAll();
 
 	int getCount();
 }

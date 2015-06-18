@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import code.Level;
 import dao.UserDao;
@@ -29,6 +30,8 @@ public class UserServiceTest {
 	UserDao userDao;
 	@Autowired
 	DataSource dataSource;
+	@Autowired
+	PlatformTransactionManager transactionManager;
 
 	List<UserEntity> usersFixture;
 
@@ -77,7 +80,7 @@ public class UserServiceTest {
 	public void upgradeAllorNothing() throws Exception {
 		UserService testUserService = new TestUserService(usersFixture.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setDataSource(dataSource);
+		testUserService.setTransactionManager(transactionManager);
 
 		userDao.deleteAll();
 		for (UserEntity user : usersFixture)

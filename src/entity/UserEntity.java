@@ -22,6 +22,15 @@ public class UserEntity {
 		this.recommend = recommend;
 	}
 
+	public void upgradeLevel() {
+		Level nextLevel = this.level.getNextLevel();
+		if (nextLevel == null) {
+			throw new IllegalStateException("can't upgrade user level from this level [" + this.level + "]");
+		} else {
+			this.level = nextLevel;
+		}
+	}
+
 	public String getId() {
 		return id;
 	}

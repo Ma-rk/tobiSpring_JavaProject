@@ -40,8 +40,7 @@ public class UserService {
 	}
 
 	private void upgradeUserLevel(UserEntity user) {
-		if (user.getLevel() == Level.BASIC) user.setLevel(Level.SILVER);
-		else if (user.getLevel() == Level.SILVER) user.setLevel(Level.GOLD);
+		user.upgradeLevel();
 		userDao.update(user);
 	}
 }

@@ -1,16 +1,22 @@
 package code;
 
 public enum Level {
-	BASIC(1), SILVER(2), GOLD(3);
+	GOLD(3, null), SILVER(2, GOLD), BASIC(1, SILVER);
 
 	private final int value;
+	private final Level nextLevel;
 
-	Level(int value) {
+	Level(int value, Level nextLevel) {
 		this.value = value;
+		this.nextLevel = nextLevel;
 	}
 
 	public int intValue() {
 		return value;
+	}
+
+	public Level getNextLevel() {
+		return this.nextLevel;
 	}
 
 	public static Level valueOf(int value) {

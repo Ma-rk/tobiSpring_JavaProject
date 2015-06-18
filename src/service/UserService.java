@@ -43,6 +43,7 @@ public class UserService {
 			for (UserEntity user : users) {
 				if (isQualifiedToUpgradeUserLevel(user)) upgradeUserLevel(user);
 			}
+			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
 			throw e;

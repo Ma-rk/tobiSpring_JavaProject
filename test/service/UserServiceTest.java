@@ -42,11 +42,11 @@ public class UserServiceTest {
 
 		userService.upgradeUserLevel();
 
-		checkUserLevel(usersFixture.get(0), Level.BASIC);
-		checkUserLevel(usersFixture.get(1), Level.SILVER);
-		checkUserLevel(usersFixture.get(2), Level.SILVER);
-		checkUserLevel(usersFixture.get(3), Level.GOLD);
-		checkUserLevel(usersFixture.get(4), Level.GOLD);
+		checkUserLevel(usersFixture.get(0), false);
+		checkUserLevel(usersFixture.get(1), true);
+		checkUserLevel(usersFixture.get(2), false);
+		checkUserLevel(usersFixture.get(3), true);
+		checkUserLevel(usersFixture.get(4), false);
 	}
 
 	@Test
@@ -67,10 +67,15 @@ public class UserServiceTest {
 		assertEquals(Level.BASIC, userWithoutLevelRetrieved.getLevel());
 	}
 
-	private void checkUserLevel(UserEntity user, Level expectedLevel) {
-		System.out.println("checking user level of user [" + user.getId() + "]");
+	private void checkUserLevel(UserEntity user, boolean upgraded) {
+		System.out.print("checking user level of user [" + user.getId() + "]: ");
 		UserEntity updatedUser = userDao.get(user.getId());
-		System.out.println("expected: [" + expectedLevel + "], actual: [" + updatedUser.getLevel() + "]");
-		assertEquals(expectedLevel, updatedUser.getLevel());
+		if (upgraded) {
+			System.out.println("updated.");
+			assertEquals(updatedUser.getLevel(), user.getLevel().getNextLevel());
+		} else {
+			System.out.println("not updated.");
+			assertEquals(updatedUser.getLevel(), user.getLevel());
+		}
 	}
 }

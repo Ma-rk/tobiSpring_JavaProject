@@ -127,11 +127,11 @@ public class UserDaoTest {
 	}
 
 	private void checkUserCoidentity(UserEntity user1, UserEntity user2) {
-		assertEquals(this.user1.getId(), this.user2.getId());
-		assertEquals(this.user1.getName(), this.user2.getName());
-		assertEquals(this.user1.getPassword(), this.user2.getPassword());
-		assertEquals(this.user1.getLevel(), this.user2.getLevel());
-		assertEquals(this.user1.getLogin(), this.user2.getLogin());
-		assertEquals(this.user1.getRecommend(), this.user2.getRecommend());
+		assertEquals(user1.getId(), user2.getId());
+		assertEquals(user1.getName(), user2.getName());
+		assertEquals(user1.getPassword(), user2.getPassword());
+		assertEquals(user1.getLevel(), user2.getLevel());
+		assertEquals(user1.getLogin(), user2.getLogin());
+		assertEquals(user1.getRecommend(), user2.getRecommend());
 	}
 }

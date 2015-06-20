@@ -42,14 +42,14 @@ public class UserService {
 	 */
 	public void add(UserEntity user) {
 		if (user.getLevel() == null) user.setLevel(Level.BASIC);
-		userDao.add(user);
+		this.userDao.add(user);
 	}
 
 	public void upgradeLevelOfEveryUser() throws Exception {
 		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
 		try {
-			List<UserEntity> users = userDao.getAll();
+			List<UserEntity> users = this.userDao.getAll();
 			for (UserEntity user : users) {
 				if (isQualifiedToUpgradeUserLevel(user)) upgradeLevelOfOneUser(user);
 			}
@@ -86,7 +86,7 @@ public class UserService {
 
 	protected void upgradeLevelOfOneUser(UserEntity user) {
 		user.upgradeLevel();
-		userDao.update(user);
+		this.userDao.update(user);
 		sendUpgradeEmail(user);
 	}
 }

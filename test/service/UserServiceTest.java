@@ -48,33 +48,33 @@ public class UserServiceTest {
 
 	@Test
 	public void upgradeUserLevelTest() throws Exception {
-		userDao.deleteAll();
+		this.userDao.deleteAll();
 
-		for (UserEntity user : usersFixture)
-			userDao.add(user);
+		for (UserEntity user : this.usersFixture)
+			this.userDao.add(user);
 
-		userService.upgradeLevelOfEveryUser();
+		this.userService.upgradeLevelOfEveryUser();
 
-		checkUserLevel(usersFixture.get(0), false);
-		checkUserLevel(usersFixture.get(1), true);
-		checkUserLevel(usersFixture.get(2), false);
-		checkUserLevel(usersFixture.get(3), true);
-		checkUserLevel(usersFixture.get(4), false);
+		checkUserLevel(this.usersFixture.get(0), false);
+		checkUserLevel(this.usersFixture.get(1), true);
+		checkUserLevel(this.usersFixture.get(2), false);
+		checkUserLevel(this.usersFixture.get(3), true);
+		checkUserLevel(this.usersFixture.get(4), false);
 	}
 
 	@Test
 	public void levelHandlingUserAddTest() {
-		userDao.deleteAll();
+		this.userDao.deleteAll();
 
-		UserEntity userWithLevel = usersFixture.get(4);
-		UserEntity userWithoutLevel = usersFixture.get(0);
+		UserEntity userWithLevel = this.usersFixture.get(4);
+		UserEntity userWithoutLevel = this.usersFixture.get(0);
 		userWithoutLevel.setLevel(null);
 
-		userService.add(userWithLevel);
-		userService.add(userWithoutLevel);
+		this.userService.add(userWithLevel);
+		this.userService.add(userWithoutLevel);
 
-		UserEntity userWithLevelRetrieved = userDao.get(userWithLevel.getId());
-		UserEntity userWithoutLevelRetrieved = userDao.get(userWithoutLevel.getId());
+		UserEntity userWithLevelRetrieved = this.userDao.get(userWithLevel.getId());
+		UserEntity userWithoutLevelRetrieved = this.userDao.get(userWithoutLevel.getId());
 
 		assertEquals(Level.GOLD, userWithLevelRetrieved.getLevel());
 		assertEquals(Level.BASIC, userWithoutLevelRetrieved.getLevel());
@@ -82,26 +82,26 @@ public class UserServiceTest {
 
 	@Test
 	public void upgradeAllorNothing() throws Exception {
-		UserService testUserService = new TestUserService(usersFixture.get(3).getId());
+		UserService testUserService = new TestUserService(this.usersFixture.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setTransactionManager(transactionManager);
-		testUserService.setMailSender(mailSender);
+		testUserService.setTransactionManager(this.transactionManager);
+		testUserService.setMailSender(this.mailSender);
 
-		userDao.deleteAll();
-		for (UserEntity user : usersFixture)
-			userDao.add(user);
+		this.userDao.deleteAll();
+		for (UserEntity user : this.usersFixture)
+			this.userDao.add(user);
 
 		try {
 			testUserService.upgradeLevelOfEveryUser();
 			fail("TestUserServiceException expected");
 		} catch (TestUserServiceException e) {
 		}
-		checkUserLevel(usersFixture.get(1), false);
+		checkUserLevel(this.usersFixture.get(1), false);
 	}
 
 	private void checkUserLevel(UserEntity user, boolean upgraded) {
 		System.out.print("checking user level of user [" + user.getId() + "]: ");
-		UserEntity updatedUser = userDao.get(user.getId());
+		UserEntity updatedUser = this.userDao.get(user.getId());
 		if (upgraded) {
 			System.out.println("updated.");
 			assertEquals(updatedUser.getLevel(), user.getLevel().getNextLevel());

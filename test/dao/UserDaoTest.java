@@ -43,95 +43,95 @@ public class UserDaoTest {
 
 	@Test
 	public void addUserTest() {
-		dao.add(user1);
+		this.dao.add(user1);
 		String userListJson = gson.toJson(dao.get(user1.getId()));
 		System.out.println(userListJson);
 
-		dao.deleteAll();
+		this.dao.deleteAll();
 
-		dao.add(user2);
+		this.dao.add(user2);
 		userListJson = gson.toJson(dao.get(user2.getId()));
 		System.out.println(userListJson);
 	}
 
 	@Test
 	public void getAllTest() {
-		dao.deleteAll();
+		this.dao.deleteAll();
 
-		assertEquals(0, dao.getCount());
+		assertEquals(0, this.dao.getCount());
 
-		List<UserEntity> users0 = dao.getAll();
+		List<UserEntity> users0 = this.dao.getAll();
 		assertEquals(0, users0.size());
 
-		dao.add(user1);
-		List<UserEntity> users1 = dao.getAll();
+		this.dao.add(this.user1);
+		List<UserEntity> users1 = this.dao.getAll();
 		assertEquals(1, users1.size());
-		checkUserCoidentity(user1, users1.get(0));
+		checkUserCoidentity(this.user1, users1.get(0));
 
-		dao.add(user2);
-		List<UserEntity> users2 = dao.getAll();
+		this.dao.add(user2);
+		List<UserEntity> users2 = this.dao.getAll();
 		assertEquals(2, users2.size());
-		checkUserCoidentity(user1, users2.get(0));
-		checkUserCoidentity(user2, users2.get(1));
+		checkUserCoidentity(this.user1, users2.get(0));
+		checkUserCoidentity(this.user2, users2.get(1));
 
-		dao.add(user3);
-		List<UserEntity> users3 = dao.getAll();
+		this.dao.add(this.user3);
+		List<UserEntity> users3 = this.dao.getAll();
 		assertEquals(3, users3.size());
-		checkUserCoidentity(user1, users3.get(0));
-		checkUserCoidentity(user2, users3.get(1));
-		checkUserCoidentity(user3, users3.get(2));
+		checkUserCoidentity(this.user1, users3.get(0));
+		checkUserCoidentity(this.user2, users3.get(1));
+		checkUserCoidentity(this.user3, users3.get(2));
 	}
 
 	@Test
 	public void addAndGet() {
-		dao.deleteAll();
-		assertEquals(0, dao.getCount());
+		this.dao.deleteAll();
+		assertEquals(0, this.dao.getCount());
 
-		dao.add(user1);
-		assertEquals(1, dao.getCount());
-		checkUserCoidentity(user1, dao.get(user1.getId()));
+		this.dao.add(this.user1);
+		assertEquals(1, this.dao.getCount());
+		checkUserCoidentity(this.user1, this.dao.get(this.user1.getId()));
 
-		dao.add(user2);
-		assertEquals(2, dao.getCount());
-		checkUserCoidentity(user2, dao.get(user2.getId()));
+		this.dao.add(this.user2);
+		assertEquals(2, this.dao.getCount());
+		checkUserCoidentity(this.user2, this.dao.get(this.user2.getId()));
 
-		dao.deleteAll();
-		assertEquals(0, dao.getCount());
+		this.dao.deleteAll();
+		assertEquals(0, this.dao.getCount());
 	}
 
 	@Test
 	public void updateTest() {
-		dao.deleteAll();
+		this.dao.deleteAll();
 
-		dao.add(user1);
-		dao.add(user2);
-		dao.add(user3);
+		this.dao.add(this.user1);
+		this.dao.add(this.user2);
+		this.dao.add(this.user3);
 
-		assertEquals(3, dao.getCount());
+		assertEquals(3, this.dao.getCount());
 
-		user1.setLogin(12);
-		user1.setPassword("new_pw_pw");
+		this.user1.setLogin(12);
+		this.user1.setPassword("new_pw_pw");
 
-		dao.update(user1);
+		this.dao.update(this.user1);
 
-		checkUserCoidentity(user2, dao.get(user2.getId()));
-		checkUserCoidentity(user3, dao.get(user3.getId()));
+		checkUserCoidentity(this.user2, this.dao.get(this.user2.getId()));
+		checkUserCoidentity(this.user3, this.dao.get(this.user3.getId()));
 	}
 
 	@Test(expected = EmptyResultDataAccessException.class)
 	public void getUserFailure() {
-		dao.deleteAll();
-		assertEquals(0, dao.getCount());
+		this.dao.deleteAll();
+		assertEquals(0, this.dao.getCount());
 
-		dao.get("unknownId");
+		this.dao.get("unknownId");
 	}
 
 	private void checkUserCoidentity(UserEntity user1, UserEntity user2) {
-		assertEquals(user1.getId(), user2.getId());
-		assertEquals(user1.getName(), user2.getName());
-		assertEquals(user1.getPassword(), user2.getPassword());
-		assertEquals(user1.getLevel(), user2.getLevel());
-		assertEquals(user1.getLogin(), user2.getLogin());
-		assertEquals(user1.getRecommend(), user2.getRecommend());
+		assertEquals(this.user1.getId(), this.user2.getId());
+		assertEquals(this.user1.getName(), this.user2.getName());
+		assertEquals(this.user1.getPassword(), this.user2.getPassword());
+		assertEquals(this.user1.getLevel(), this.user2.getLevel());
+		assertEquals(this.user1.getLogin(), this.user2.getLogin());
+		assertEquals(this.user1.getRecommend(), this.user2.getRecommend());
 	}
 }

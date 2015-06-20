@@ -12,7 +12,7 @@ public class UserEntityTest {
 
 	@Before
 	public void setUp() {
-		user = new UserEntity();
+		this.user = new UserEntity();
 	}
 
 	@Test
@@ -20,9 +20,9 @@ public class UserEntityTest {
 		Level[] levels = Level.values();
 		for (Level level : levels) {
 			if (level.getNextLevel() == null) continue;
-			user.setLevel(level);
-			user.upgradeLevel();
-			assertEquals(user.getLevel(), level.getNextLevel());
+			this.user.setLevel(level);
+			this.user.upgradeLevel();
+			assertEquals(this.user.getLevel(), level.getNextLevel());
 		}
 	}
 
@@ -31,9 +31,9 @@ public class UserEntityTest {
 		Level[] levels = Level.values();
 		for (Level level : levels) {
 			if (level.getNextLevel() != null) continue;
-			user.setLevel(level);
-			user.upgradeLevel();
-			assertEquals(user.getLevel(), level.getNextLevel());
+			this.user.setLevel(level);
+			this.user.upgradeLevel();
+			assertEquals(this.user.getLevel(), level.getNextLevel());
 		}
 
 	}

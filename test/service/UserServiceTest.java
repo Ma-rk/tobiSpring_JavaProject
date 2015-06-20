@@ -49,7 +49,7 @@ public class UserServiceTest {
 		for (UserEntity user : usersFixture)
 			userDao.add(user);
 
-		userService.upgradeUserLevel();
+		userService.upgradeLevelOfEveryUser();
 
 		checkUserLevel(usersFixture.get(0), false);
 		checkUserLevel(usersFixture.get(1), true);
@@ -87,7 +87,7 @@ public class UserServiceTest {
 			userDao.add(user);
 
 		try {
-			testUserService.upgradeUserLevel();
+			testUserService.upgradeLevelOfEveryUser();
 			fail("TestUserServiceException expected");
 		} catch (TestUserServiceException e) {
 		}
@@ -113,9 +113,9 @@ public class UserServiceTest {
 			this.id = id;
 		}
 
-		protected void upgradeUserLevel(UserEntity user) {
+		protected void upgradeLevelOfOneUser(UserEntity user) {
 			if (user.getId().equals(this.id)) throw new TestUserServiceException();
-			super.upgradeUserLevel(user);
+			super.upgradeLevelOfOneUser(user);
 		}
 	}
 

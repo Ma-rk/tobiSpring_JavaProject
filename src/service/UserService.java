@@ -14,6 +14,9 @@ public class UserService {
 	public static final int MIN_LOGCOUT_FOR_SILVER = 50;
 	public static final int MIN_RECCOMMEND_FOR_GOLD = 30;
 
+	/*
+	 * DI codes
+	 */
 	private UserDao userDao;
 
 	public void setUserDao(UserDao userDao) {
@@ -26,18 +29,21 @@ public class UserService {
 		this.transactionManager = transactionManager;
 	}
 
+	/*
+	 * functional methods
+	 */
 	public void add(UserEntity user) {
 		if (user.getLevel() == null) user.setLevel(Level.BASIC);
 		userDao.add(user);
 	}
 
-	public void upgradeUserLevel() throws Exception {
+	public void upgradeLevelOfEveryUser() throws Exception {
 		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
 		try {
 			List<UserEntity> users = userDao.getAll();
 			for (UserEntity user : users) {
-				if (isQualifiedToUpgradeUserLevel(user)) upgradeUserLevel(user);
+				if (isQualifiedToUpgradeUserLevel(user)) upgradeLevelOfOneUser(user);
 			}
 			this.transactionManager.commit(status);
 		} catch (Exception e) {
@@ -60,7 +66,7 @@ public class UserService {
 		}
 	}
 
-	protected void upgradeUserLevel(UserEntity user) {
+	protected void upgradeLevelOfOneUser(UserEntity user) {
 		user.upgradeLevel();
 		userDao.update(user);
 	}

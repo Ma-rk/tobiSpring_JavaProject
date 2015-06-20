@@ -13,19 +13,18 @@ import code.Level;
 import entity.UserEntity;
 
 public class UserDaoJdbc implements UserDao {
+	/*
+	 * DI codes
+	 */
 	private JdbcTemplate jdbcTemplate;
-
-	RowMapper<UserEntity> userMapper = new RowMapper<UserEntity>() {
-		public UserEntity mapRow(ResultSet rs, int arg1) throws SQLException {
-			return new UserEntity(rs.getString("id"), rs.getString("name"), rs.getString("password"), Level.valueOf(rs.getInt("level")), rs.getInt("login"),
-					rs.getInt("recommend"));
-		}
-	};
 
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+	/*
+	 * functional methods
+	 */
 	public void add(UserEntity user) {
 		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values (?,?,?,?,?,?)", user.getId(), user.getName(),
 				user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
@@ -51,4 +50,14 @@ public class UserDaoJdbc implements UserDao {
 	public int getCount() {
 		return this.jdbcTemplate.queryForInt("select count(*) from users");
 	}
+
+	/*
+	 * support methods
+	 */
+	RowMapper<UserEntity> userMapper = new RowMapper<UserEntity>() {
+		public UserEntity mapRow(ResultSet rs, int arg1) throws SQLException {
+			return new UserEntity(rs.getString("id"), rs.getString("name"), rs.getString("password"), Level.valueOf(rs.getInt("level")), rs.getInt("login"),
+					rs.getInt("recommend"));
+		}
+	};
 }

@@ -1,16 +1,9 @@
 package service;
 
 import java.util.List;
-import java.util.Properties;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -76,24 +69,16 @@ public class UserService {
 	}
 
 	private void sendUpgradeEmail(UserEntity user) {
-		Properties props = new Properties();
-		props.put("mail.smtp.host", "mail.com");
-		Session s = Session.getInstance(props, null);
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("mail.server.com");
 
-		MimeMessage message = new MimeMessage(s);
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setFrom("mailmail@mail.com");
+		mailMessage.setSubject("User level has been upgraded.");
+		mailMessage.setText("User level has been upgraded to [" + user.getLevel() + "]");
 
-		try {
-			message.setFrom(new InternetAddress("mailmail@mail.com"));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-			message.setSubject("User level has been upgraded.");
-			message.setText("User level has been upgraded to [" + user.getLevel() + "]");
-
-			Transport.send(message);
-		} catch (AddressException e) {
-			throw new RuntimeException(e);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
+		mailSender.send(mailMessage);
 	}
 
 	protected void upgradeLevelOfOneUser(UserEntity user) {

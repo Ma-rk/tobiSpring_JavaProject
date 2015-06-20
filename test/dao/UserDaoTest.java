@@ -36,9 +36,9 @@ public class UserDaoTest {
 
 	@Before
 	public void setup() {
-		this.user1 = new UserEntity("idid", "namename", "pwpw", Level.BASIC, 1, 0);
-		this.user2 = new UserEntity("idid2", "nmnm", "pwpw", Level.SILVER, 55, 10);
-		this.user3 = new UserEntity("idid3", "nm_nm", "pwpw", Level.GOLD, 100, 40);
+		this.user1 = new UserEntity("idid", "namename", "pwpw", Level.BASIC, 1, 0, "mailmail@mail.com");
+		this.user2 = new UserEntity("idid2", "nmnm", "pwpw", Level.SILVER, 55, 10, "mailmail@mail.com");
+		this.user3 = new UserEntity("idid3", "nm_nm", "pwpw", Level.GOLD, 100, 40, "mailmail@mail.com");
 	}
 
 	@Test

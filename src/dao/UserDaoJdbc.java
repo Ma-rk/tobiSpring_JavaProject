@@ -26,8 +26,8 @@ public class UserDaoJdbc implements UserDao {
 	 * functional methods
 	 */
 	public void add(UserEntity user) {
-		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values (?,?,?,?,?,?)", user.getId(), user.getName(),
-				user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend, email) values (?,?,?,?,?,?,?)", user.getId(), user.getName(),
+				user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
 	}
 
 	public void deleteAll() {
@@ -35,8 +35,8 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public void update(UserEntity user) {
-		this.jdbcTemplate.update("update users set name=?, password=?, level=?, login=?, recommend=? where id=?", user.getName(), user.getPassword(), user
-				.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
+		this.jdbcTemplate.update("update users set name=?, password=?, level=?, login=?, recommend=?, email=? where id=?", user.getName(), user.getPassword(), user
+				.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
 	}
 
 	public UserEntity get(String id) {
@@ -57,7 +57,7 @@ public class UserDaoJdbc implements UserDao {
 	RowMapper<UserEntity> userMapper = new RowMapper<UserEntity>() {
 		public UserEntity mapRow(ResultSet rs, int arg1) throws SQLException {
 			return new UserEntity(rs.getString("id"), rs.getString("name"), rs.getString("password"), Level.valueOf(rs.getInt("level")), rs.getInt("login"),
-					rs.getInt("recommend"));
+					rs.getInt("recommend"), rs.getString("email"));
 		}
 	};
 }

@@ -21,7 +21,7 @@ public class UserEntityTest {
 		for (Level level : levels) {
 			if (level.getNextLevel() == null) continue;
 			this.user.setLevel(level);
-			this.user.upgradeLevel();
+			this.user.upgradeMyLevel();
 			assertEquals(this.user.getLevel(), level.getNextLevel());
 		}
 	}
@@ -32,9 +32,8 @@ public class UserEntityTest {
 		for (Level level : levels) {
 			if (level.getNextLevel() != null) continue;
 			this.user.setLevel(level);
-			this.user.upgradeLevel();
+			this.user.upgradeMyLevel();
 			assertEquals(this.user.getLevel(), level.getNextLevel());
 		}
-
 	}
 }

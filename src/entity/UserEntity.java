@@ -1,8 +1,13 @@
 package entity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import code.Level;
 
 public class UserEntity {
+	private static final Logger logger = LoggerFactory.getLogger(UserEntity.class);
+
 	String id;
 	String name;
 	String password;
@@ -24,12 +29,14 @@ public class UserEntity {
 		this.email = email;
 	}
 
-	public void upgradeLevel() {
+	public void upgradeMyLevel() {
+		logger.info("upgradeMyLevel() to target [{}]", this.id);
 		Level nextLevel = this.level.getNextLevel();
 		if (nextLevel == null) {
 			throw new IllegalStateException("can't upgrade user level from this level [" + this.level + "]");
 		} else {
 			this.level = nextLevel;
+			logger.info("level upgrade on [{}] has been executed.", this.id);
 		}
 	}
 

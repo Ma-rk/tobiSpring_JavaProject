@@ -1,8 +1,8 @@
 package service;
 
 import static org.junit.Assert.*;
-import static service.UserService.MIN_LOGCOUT_FOR_SILVER;
-import static service.UserService.MIN_RECCOMMEND_FOR_GOLD;
+import static service.UserServiceImpl.MIN_LOGCOUT_FOR_SILVER;
+import static service.UserServiceImpl.MIN_RECCOMMEND_FOR_GOLD;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.test.annotation.DirtiesContext;
@@ -26,6 +28,7 @@ import entity.UserEntity;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserServiceTest {
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 	@Autowired
 	UserService userService;
 	@Autowired
@@ -36,6 +39,8 @@ public class UserServiceTest {
 	PlatformTransactionManager transactionManager;
 	@Autowired
 	MailSender mailSender;
+	@Autowired
+	UserServiceImpl userServiceImpl;
 
 	List<UserEntity> usersFixture;
 
@@ -49,6 +54,7 @@ public class UserServiceTest {
 
 	@Test
 	public void upgradeUserLevelTest() throws Exception {
+		logger.info("==>upgradeUserLevelTest()");
 		prepareDbTestData();
 
 		this.userService.upgradeLevelOfEveryUser();
@@ -58,10 +64,12 @@ public class UserServiceTest {
 		checkUserLevel(this.usersFixture.get(2), false);
 		checkUserLevel(this.usersFixture.get(3), true);
 		checkUserLevel(this.usersFixture.get(4), false);
+		logger.info("<==upgradeUserLevelTest()\n");
 	}
 
 	@Test
 	public void levelHandlingUserAddTest() {
+		logger.info("==>levelHandlingUserAddTest()");
 		this.userDao.deleteAll();
 
 		UserEntity userWithLevel = this.usersFixture.get(4);
@@ -76,32 +84,40 @@ public class UserServiceTest {
 
 		assertEquals(Level.GOLD, userWithLevelRetrieved.getLevel());
 		assertEquals(Level.BASIC, userWithoutLevelRetrieved.getLevel());
+		logger.info("<==levelHandlingUserAddTest()\n");
 	}
 
 	@Test
 	public void upgradeAllorNothing() throws Exception {
-		UserService testUserService = new TestUserService(this.usersFixture.get(3).getId());
+		logger.info("==>upgradeAllorNothing()");
+		TestUserService testUserService = new TestUserService(this.usersFixture.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setTransactionManager(this.transactionManager);
 		testUserService.setMailSender(this.mailSender);
+
+		UserServiceTx txUserService = new UserServiceTx();
+		txUserService.setTransactionManager(this.transactionManager);
+		txUserService.setUserService(testUserService);
 
 		prepareDbTestData();
 
 		try {
-			testUserService.upgradeLevelOfEveryUser();
+			txUserService.upgradeLevelOfEveryUser();
 			fail("TestUserServiceException expected");
 		} catch (TestUserServiceException e) {
+			logger.info("catched TestUserServiceException() on [{}]", this.toString());
 		}
 		checkUserLevel(this.usersFixture.get(1), false);
+		logger.info("<==upgradeAllorNothing()\n");
 	}
 
 	@Test
 	@DirtiesContext
-	public void upgradeLevels() throws Exception {
+	public void upgradeLevelsTest() throws Exception {
+		logger.info("==>upgradeLevelsTest()");
 		prepareDbTestData();
 
 		MockMailSender mockMailSender = new MockMailSender();
-		this.userService.setMailSender(mockMailSender);
+		this.userServiceImpl.setMailSender(mockMailSender);
 
 		this.userService.upgradeLevelOfEveryUser();
 
@@ -115,27 +131,22 @@ public class UserServiceTest {
 		assertEquals(requests.size(), 2);
 		assertEquals(requests.get(0), this.usersFixture.get(1).getEmail());
 		assertEquals(requests.get(1), this.usersFixture.get(3).getEmail());
+		logger.info("<==upgradeLevelsTest()\n");
 	}
 
 	private void checkUserLevel(UserEntity user, boolean upgraded) {
-		System.out.print("checking user level of user [" + user.getId() + "]: ");
+		logger.info("checkUserLevel(user) user id: [{}]", user.getId());
 		UserEntity updatedUser = this.userDao.get(user.getId());
 		if (upgraded) {
-			System.out.println("updated.");
+			logger.info("level of [{}] was updated.", user.getId());
 			assertEquals(updatedUser.getLevel(), user.getLevel().getNextLevel());
 		} else {
-			System.out.println("not updated.");
+			logger.info("level of [{}] was not updated.", user.getId());
 			assertEquals(updatedUser.getLevel(), user.getLevel());
 		}
 	}
 
-	private void prepareDbTestData() {
-		this.userDao.deleteAll();
-		for (UserEntity user : this.usersFixture)
-			this.userDao.add(user);
-	}
-
-	static class TestUserService extends UserService {
+	static class TestUserService extends UserServiceImpl {
 		private String id;
 
 		private TestUserService(String id) {
@@ -143,12 +154,23 @@ public class UserServiceTest {
 		}
 
 		protected void upgradeLevelOfOneUser(UserEntity user) {
-			if (user.getId().equals(this.id)) throw new TestUserServiceException();
+			logger.info("upgradeLevelOfOneUser(UserEntity)====>");
+			if (user.getId().equals(this.id)) {
+				logger.info("throwed TestUserServiceException() on [" + this.toString() + "]");
+				throw new TestUserServiceException();
+			}
 			super.upgradeLevelOfOneUser(user);
+			logger.info("upgradeLevelOfOneUser(UserEntity)<====");
 		}
 	}
 
 	static class TestUserServiceException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
+	}
+
+	private void prepareDbTestData() {
+		this.userDao.deleteAll();
+		for (UserEntity user : this.usersFixture)
+			this.userDao.add(user);
 	}
 }

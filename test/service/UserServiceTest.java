@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,10 +49,7 @@ public class UserServiceTest {
 
 	@Test
 	public void upgradeUserLevelTest() throws Exception {
-		this.userDao.deleteAll();
-
-		for (UserEntity user : this.usersFixture)
-			this.userDao.add(user);
+		prepareDbTestData();
 
 		this.userService.upgradeLevelOfEveryUser();
 
@@ -87,9 +85,7 @@ public class UserServiceTest {
 		testUserService.setTransactionManager(this.transactionManager);
 		testUserService.setMailSender(this.mailSender);
 
-		this.userDao.deleteAll();
-		for (UserEntity user : this.usersFixture)
-			this.userDao.add(user);
+		prepareDbTestData();
 
 		try {
 			testUserService.upgradeLevelOfEveryUser();
@@ -97,6 +93,28 @@ public class UserServiceTest {
 		} catch (TestUserServiceException e) {
 		}
 		checkUserLevel(this.usersFixture.get(1), false);
+	}
+
+	@Test
+	@DirtiesContext
+	public void upgradeLevels() throws Exception {
+		prepareDbTestData();
+
+		MockMailSender mockMailSender = new MockMailSender();
+		this.userService.setMailSender(mockMailSender);
+
+		this.userService.upgradeLevelOfEveryUser();
+
+		checkUserLevel(this.usersFixture.get(0), false);
+		checkUserLevel(this.usersFixture.get(1), true);
+		checkUserLevel(this.usersFixture.get(2), false);
+		checkUserLevel(this.usersFixture.get(3), true);
+		checkUserLevel(this.usersFixture.get(4), false);
+
+		List<String> requests = mockMailSender.getRequest();
+		assertEquals(requests.size(), 2);
+		assertEquals(requests.get(0), this.usersFixture.get(1).getEmail());
+		assertEquals(requests.get(1), this.usersFixture.get(3).getEmail());
 	}
 
 	private void checkUserLevel(UserEntity user, boolean upgraded) {
@@ -109,6 +127,12 @@ public class UserServiceTest {
 			System.out.println("not updated.");
 			assertEquals(updatedUser.getLevel(), user.getLevel());
 		}
+	}
+
+	private void prepareDbTestData() {
+		this.userDao.deleteAll();
+		for (UserEntity user : this.usersFixture)
+			this.userDao.add(user);
 	}
 
 	static class TestUserService extends UserService {

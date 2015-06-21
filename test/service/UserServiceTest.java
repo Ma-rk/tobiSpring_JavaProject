@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static service.UserServiceImpl.MIN_LOGCOUT_FOR_SILVER;
 import static service.UserServiceImpl.MIN_RECCOMMEND_FOR_GOLD;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,16 +117,20 @@ public class UserServiceTest {
 		logger.info("==>upgradeLevelsTest()");
 		prepareDbTestData();
 
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+		MockUserDao mockUserDao = new MockUserDao(this.usersFixture);
 		MockMailSender mockMailSender = new MockMailSender();
-		this.userServiceImpl.setMailSender(mockMailSender);
 
-		this.userService.upgradeLevelOfEveryUser();
+		userServiceImpl.setUserDao(mockUserDao);
+		userServiceImpl.setMailSender(mockMailSender);
 
-		checkUserLevel(this.usersFixture.get(0), false);
-		checkUserLevel(this.usersFixture.get(1), true);
-		checkUserLevel(this.usersFixture.get(2), false);
-		checkUserLevel(this.usersFixture.get(3), true);
-		checkUserLevel(this.usersFixture.get(4), false);
+		userServiceImpl.upgradeLevelOfEveryUser();
+
+		List<UserEntity> updatedUsers = mockUserDao.getUpdated();
+		assertEquals(2, updatedUsers.size());
+		checkUserAndLevel(updatedUsers.get(0), "id_2", Level.SILVER);
+		checkUserAndLevel(updatedUsers.get(1), "id_4", Level.GOLD);
 
 		List<String> requests = mockMailSender.getRequest();
 		assertEquals(requests.size(), 2);
@@ -144,6 +149,11 @@ public class UserServiceTest {
 			logger.info("level of [{}] was not updated.", user.getId());
 			assertEquals(updatedUser.getLevel(), user.getLevel());
 		}
+	}
+
+	private void checkUserAndLevel(UserEntity updatedUser, String expectedId, Level expectedLevel) {
+		assertEquals(expectedId, updatedUser.getId());
+		assertEquals(expectedLevel, updatedUser.getLevel());
 	}
 
 	static class TestUserService extends UserServiceImpl {
@@ -166,6 +176,52 @@ public class UserServiceTest {
 
 	static class TestUserServiceException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
+	}
+
+	static class MockUserDao implements UserDao {
+		private List<UserEntity> users;
+		private List<UserEntity> updated = new ArrayList<UserEntity>();
+
+		private MockUserDao(List<UserEntity> users) {
+			this.users = users;
+		}
+
+		public List<UserEntity> getUpdated() {
+			return this.updated;
+		}
+
+		// mock method
+		public void update(UserEntity user) {
+			updated.add(user);
+		}
+
+		// stub method
+		public List<UserEntity> getAll() {
+			return this.users;
+		}
+
+		/*
+		 * test does not use these methods
+		 */
+		public UserEntity get(String id) {
+			throw new UnsupportedOperationException();
+		}
+
+		public void setDataSource(DataSource dataSource) {
+			throw new UnsupportedOperationException();
+		}
+
+		public void add(UserEntity user) {
+			throw new UnsupportedOperationException();
+		}
+
+		public void deleteAll() {
+			throw new UnsupportedOperationException();
+		}
+
+		public int getCount() {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	private void prepareDbTestData() {
